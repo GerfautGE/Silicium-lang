@@ -1,10 +1,8 @@
 
 %{
-#include <iostream>
-using namespace std;
-
-int yylex();
-void yyerror(const char* s);
+#include <stdio.h>
+extern int yylex();
+void yyerror(char* s);
 
 %}
 
@@ -20,7 +18,7 @@ void yyerror(const char* s);
 
 %%
 
-program : expression { cout << $1 << endl; }
+program : expression { fprintf(stdout, "%d\n", $1); }
         ;
 
 expression : term { $$ = $1; }
@@ -44,6 +42,6 @@ int main() {
     return 0;
 }
 
-void yyerror(const char* s) {
-    cout << "Error: " << s << endl;
+void yyerror(char* s){
+    fprintf(stderr, "Error %s\n", s);
 }

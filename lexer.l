@@ -3,6 +3,8 @@
 #include "parser.tab.h"
 %}
 
+%option noyywrap
+
 %%
 "+"     { return ADD; }
 "-"     { return SUB; }
@@ -15,7 +17,3 @@
 .       { /* handle error */ }
 
 %%
-
-int yywrap(void) {
-    return 1;
-}
