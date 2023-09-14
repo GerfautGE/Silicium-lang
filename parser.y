@@ -1,43 +1,73 @@
 
 %{
 #include <stdio.h>
+#include <stdlib.h>
 extern int yylex();
+extern FILE* yyin;
 void yyerror(char* s);
 
 %}
 
 %union {
     int integer; // Define YYSTYPE as an integer
+    char* string;
 }
 
-%token ADD SUB MUL DIV LPAREN RPAREN NUMBER
-%left ADD SUB
-%left MUL DIV
+%token FN;
+%token IDENTIFIER;
+%token ARROW;
+%token RET
 
-%type <integer> expression term factor program NUMBER
+%token LPAREN
+%token RPAREN
+%token LBRACE
+%token RBRACE
+%token COMMA
+%token SEMICOLON
 
-%%
+%token NUMBER
+%type <integer> NUMBER
+%type <string> IDENTIFIER
 
-program : expression { fprintf(stdout, "%d\n", $1); }
-        ;
-
-expression : term { $$ = $1; }
-           | expression ADD term { $$ = $1 + $3; }
-           | expression SUB term { $$ = $1 - $3; }
-           ;
-
-term : factor { $$ = $1; }
-     | term MUL factor { $$ = $1 * $3; }
-     | term DIV factor { $$ = $1 / $3; }
-     ;
-
-factor : NUMBER { $$ = $1; }
-       | LPAREN expression RPAREN { $$ = $2; }
-       ;
 
 %%
 
-int main() {
+program : FUNDEFS
+
+FUNDEFS:        FUNDEF FUNDEFS
+                | FUNDEF
+
+FUNDEF:         FN IDENTIFIER LPAREN PARAMS RPAREN ARROW LBRACE instrs RBRACE {printf("fundef %s\n", $2);}
+
+PARAMS:         PARAM 
+                | PARAM COMMA PARAMS
+
+PARAM:          %empty | IDENTIFIER
+
+instrs:         instr | instr instrs
+
+instr:          RET expr SEMICOLON
+                | expr
+
+expr:           NUMBER
+
+
+    
+%%
+
+int main(int argc, char** argv) {
+
+    if (argc < 2) {
+        fprintf(stderr, "Usage: %s <filename>\n", argv[0]);
+        exit(1);
+    }
+    FILE* fd =fopen(argv[1], "r");
+    if(!fd)
+    {
+        fprintf(stderr, "Error, could not open the file %s\n", "main.si");
+        exit(1);
+    }
+    yyin = fd;
     yyparse();
     return 0;
 }

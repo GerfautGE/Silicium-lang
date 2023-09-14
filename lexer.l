@@ -6,14 +6,24 @@
 %option noyywrap
 
 %%
-"+"     { return ADD; }
-"-"     { return SUB; }
-"*"     { return MUL; }
-"/"     { return DIV; }
-"("     { return LPAREN; }
-")"     { return RPAREN; }
-[0-9]+  { yylval.integer = atoi(yytext); return NUMBER; }
-[ \t\n] { /* ignore whitespace and newline */ }
-.       { /* handle error */ }
+
+[[:space:]]                 {/* remove blanks */}
+
+"fn"                        { return FN; }
+"->"                        { return ARROW; }
+"ret"                       { return RET; }
+
+"("                         { return LPAREN; }
+")"                         { return RPAREN; }
+","                         { return COMMA; }
+"{"                         { return LBRACE; }
+"}"                         { return RBRACE; }
+";"                         { return SEMICOLON; }
+
+
+[[:alpha:]_][[:alnum:]_]*    {yylval.string = strdup(yytext); return IDENTIFIER;}
+[0-9]+                      { yylval.integer = atoi(yytext); return NUMBER; 
+}
+.                           { /* handle error */ }
 
 %%
