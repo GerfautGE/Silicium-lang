@@ -4,7 +4,7 @@ BIN=bin
 sic: lexer parser graph
 	gcc -g -c parser.tab.c -o $(BUILD)/parser.o
 	gcc -g -c lex.yy.c -o $(BUILD)/lex.o
-	gcc -g $(BUILD)/lex.o $(BUILD)/parser.o -o $(BIN)/sic
+	g++ -g $(BUILD)/lex.o $(BUILD)/parser.o main.cpp -o $(BIN)/sic
 
 lexer: lexer.l
 	flex lexer.l

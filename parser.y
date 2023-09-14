@@ -55,18 +55,7 @@ expr:           NUMBER
     
 %%
 
-int main(int argc, char** argv) {
-
-    if (argc < 2) {
-        fprintf(stderr, "Usage: %s <filename>\n", argv[0]);
-        exit(1);
-    }
-    FILE* fd =fopen(argv[1], "r");
-    if(!fd)
-    {
-        fprintf(stderr, "Error, could not open the file %s\n", "main.si");
-        exit(1);
-    }
+int parse(FILE* fd) {
     yyin = fd;
     yyparse();
     return 0;
