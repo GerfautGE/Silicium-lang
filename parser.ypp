@@ -2,10 +2,9 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-extern int yylex();
-extern FILE* yyin;
-void yyerror(char* s);
+#include "ast.hpp"
 
+void yyerror(char* s);
 %}
 
 %union {
@@ -34,10 +33,10 @@ void yyerror(char* s);
 
 program : FUNDEFS
 
-FUNDEFS:        FUNDEF FUNDEFS
+FUNDEFS:        FUNDEF FUNDEFS {$$ =  new NodeListNode(Tag::Tlistglobdef, $2); }
                 | FUNDEF
 
-FUNDEF:         FN IDENTIFIER LPAREN PARAMS RPAREN ARROW LBRACE instrs RBRACE {printf("fundef %s\n", $2);}
+FUNDEF:         FN IDENTIFIER LPAREN PARAMS RPAREN ARROW LBRACE instrs RBRACE {}
 
 PARAMS:         PARAM 
                 | PARAM COMMA PARAMS
@@ -55,11 +54,11 @@ expr:           NUMBER
     
 %%
 
-int parse(FILE* fd) {
-    yyin = fd;
-    yyparse();
-    return 0;
+ASTNode * buildAST()
+{
+  return new NodeListNode(Tag::Tlistglobdef, {});
 }
+
 
 void yyerror(char* s){
     fprintf(stderr, "Error %s\n", s);

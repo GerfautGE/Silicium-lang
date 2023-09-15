@@ -1,6 +1,7 @@
 
 %{
-#include "parser.tab.h"
+#include "parser.tab.hpp"
+#define YY
 %}
 
 %option noyywrap

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdio.h>
-
-extern "C" int parse(FILE* fd);
+#include "parser.tab.hpp"
+#include "ast.hpp"
 
 static void usage(const char * progname){
     std::cerr << "Usage: " << progname << " <filename>" << std::endl;
@@ -21,7 +21,12 @@ int main(int argc, char ** argv){
         exit(EXIT_FAILURE);
     }
 
-    parse(fd);
+    // Set the file as yyin
+    yyin = fd;
+    yyparse();
+
+    ASTNode* res = buildAST();
+    dotAST(res, 0);
 
     return 0;
 }
